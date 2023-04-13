@@ -1,4 +1,4 @@
-name: Run commands on ubuntu 
+name: ubuntu-runner
 on:
   push:
     branches: [ main ]
