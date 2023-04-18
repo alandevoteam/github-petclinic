@@ -23,8 +23,15 @@ jobs:
       run: mvn -B package --file pom.xml
     
     - name: Maven install
-      run: mvn clean install --settings /opt/maven/conf/settings.xml
+      run: mvn clean install -DskipTests --settings /opt/maven/conf/settings.xml
     
     - name: Nexus deploy
       run: mvn clean deploy --settings /opt/maven/conf/settings.xml
+      
+    - name: Nexus release prepare
+      run: mvn release:prepare -B --settings /opt/maven/conf/settings.xml
+      
+    - name: Nexus release perform
+      run: mvn perform:perform -B --settings /opt/maven/conf/settings.xml
+      
 
