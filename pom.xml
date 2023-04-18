@@ -574,12 +574,13 @@
         </snapshotRepository>
     </distributionManagement>  
     
-        <scm>
-            <connection>scm:git:https://alandevoteam:Griffioen10.@github.com/alandevoteam/github-petclinic.git</connection>
-            <developerConnection>scm:git:https://alandevoteam:Griffioen10.@github.com/alandevoteam/github-petclinic.git</developerConnection>
-            <url>https://github.com/alandevoteam/github-petclinic</url>
-            <tag>HEAD</tag>
-        </scm>
+    <scm>
+        <connection>scm:git:https://alandevoteam:Griffioen10.@gitlab.com/alandevoteam/git-challenge.git</connection>
+        <developerConnection>scm:git:https://alandevoteam:Griffioen10.@gitlab.com/alandevoteam/git-challenge.git</developerConnection>
+        <url>https://gitlab.com/alandevoteam/git-challenge</url>
+        <tag>HEAD</tag>
+    </scm>
+
 
     
 </project>
