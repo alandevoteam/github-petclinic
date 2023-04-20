@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "ubuntu" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "ubuntu" ]
 
 jobs:
   build:
@@ -33,3 +33,5 @@ jobs:
       
     - name: Nexus release perform
       run: mvn release:perform --settings /opt/maven/conf/settings.xml -e
+      
+    
