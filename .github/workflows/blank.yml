@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    if: "!contains(github.event.commits[0].message, '[skip ci]')"
     runs-on: self-hosted
     
     steps:
@@ -29,7 +28,7 @@ jobs:
       run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
-      if: "contains(github.event.head_commit.message, '[skip ci]') == false"
+      if: contains(github.event.head_commit.message, '[skip ci]') == false
       run: mvn release:prepare -B -DskipTests --settings /opt/maven/conf/settings.xml
 
     - name: Nexus release perform
