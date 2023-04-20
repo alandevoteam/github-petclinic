@@ -575,12 +575,11 @@
     </distributionManagement>  
     
     <scm>
-        <connection>scm:git:git@github.com:alandevoteam/github-petclinic.git</connection>
+        <connection>scm:git://github.com:alandevoteam/github-petclinic.git</connection>
         <developerConnection>scm:git:git@github.com:alandevoteam/github-petclinic.git</developerConnection>
-        <url>https://https://github.com/alandevoteam/github-petclinic</url>
+        <url>https://github.com/alandevoteam/github-petclinic</url>
         <tag>HEAD</tag>
     </scm>
-
 
     
 </project>
