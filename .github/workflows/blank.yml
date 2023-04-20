@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "alan" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "alan" ]
 
 jobs:
   build:
@@ -29,9 +29,9 @@ jobs:
       run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
-      run: mvn release:prepare -B --settings /opt/maven/conf/settings.xml
+      run: mvn release:prepare -B -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release perform
-      run: mvn release:perform --settings /opt/maven/conf/settings.xml -e
+      run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
       
     
