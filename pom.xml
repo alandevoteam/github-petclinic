@@ -578,7 +578,7 @@
         <url>https://github.com/alandevoteam/github-petclinic</url>
         <connection>scm:git:git://github.com/alandevoteam/github-petclinic.git</connection>
         <developerConnection>scm:git:git@github.com:alandevoteam/github-petclinic.git</developerConnection>
-    </scm>
+    </sc>
 
     
 </project>
