@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "alan" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "alan" ]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -34,4 +34,4 @@ jobs:
     - name: Nexus release perform
       run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
       
-    
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
