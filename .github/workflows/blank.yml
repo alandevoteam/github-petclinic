@@ -2,9 +2,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "ubuntu-runner" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "ubuntu-runner" ]
+    branches: [ "master" ]
 
 jobs:
   build:
