@@ -30,8 +30,8 @@ jobs:
       
     - name: Nexus release prepare
       run: mvn release:prepare -B -DskipTests --settings /opt/maven/conf/settings.xml
-      
+      if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
     - name: Nexus release perform
       run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
       
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
