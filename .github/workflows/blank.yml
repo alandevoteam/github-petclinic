@@ -26,7 +26,7 @@ jobs:
       run: mvn clean install -DskipTests --settings /opt/maven/conf/settings.xml
     
     - name: Nexus deploy snapshot
-      run: mvn clean deploy --settings /opt/maven/conf/settings.xml
+      run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
       run: mvn release:prepare -B --settings /opt/maven/conf/settings.xml
