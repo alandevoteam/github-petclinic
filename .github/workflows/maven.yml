@@ -22,10 +22,10 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Maven install
+    - name: Maven clean install (skiptests)
       run: mvn clean install -DskipTests --settings /opt/maven/conf/settings.xml
     
-    - name: Nexus deploy
+    - name: Nexus deploy snapshot
       run: mvn clean deploy --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
