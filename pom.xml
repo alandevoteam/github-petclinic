@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-framework-petclinic</artifactId>
-    <version>5.3.9-SNAPSHOT</version>
+    <version>5.3.8-SNAPSHOT</version>
 
     <name>Spring Framework Petclinic</name>
     <packaging>war</packaging>
@@ -320,7 +320,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>2.5.3</version>
             </plugin>
             
            
@@ -577,8 +577,7 @@
         <url>https://github.com/alandevoteam/github-petclinic</url>
         <connection>scm:git:git://github.com/alandevoteam/github-petclinic.git</connection>
         <developerConnection>scm:git:git@github.com:alandevoteam/github-petclinic.git</developerConnection>
-      <tag>spring-framework-petclinic-5.3.8</tag>
-  </scm>
+    </scm>
 
     
 </project>
