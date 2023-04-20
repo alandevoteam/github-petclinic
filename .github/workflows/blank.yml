@@ -32,4 +32,4 @@ jobs:
       run: mvn release:prepare -B --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release perform
-      run: mvn perform:perform -B --settings /opt/maven/conf/settings.xml -e
+      run: mvn release:perform --settings /opt/maven/conf/settings.xml -e
