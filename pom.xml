@@ -575,9 +575,9 @@
     </distributionManagement>  
     
     <scm>
-        <connection>scm:git:https://alandevoteam:Griffioen10.@gitlab.com/alandevoteam/git-challenge.git</connection>
-        <developerConnection>scm:git:https://alandevoteam:Griffioen10.@gitlab.com/alandevoteam/git-challenge.git</developerConnection>
-        <url>https://gitlab.com/alandevoteam/git-challenge</url>
+        <connection>scm:git:https://alandevoteam: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@github.com/alandevoteam/github-petclinic.git</connection>
+        <developerConnection>scm:git:https://alandevoteam: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@github.com/alandevoteam/github-petclinic.git</developerConnection>
+        <url>https://https://github.com/alandevoteam/github-petclinic</url>
         <tag>HEAD</tag>
     </scm>
 
