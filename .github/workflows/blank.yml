@@ -3,6 +3,10 @@ name: Java CI with Maven
 on:
   push:
     branches: [ "master" ]
+    # Only trigger on push events if the commit message does not contain "[skip ci]"
+    # This will prevent an infinite loop of pipeline runs
+    # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onpushpull_requestbranches
+    if: '!(github.event.head_commit.message =~ /\[skip ci\]/i)'
   pull_request:
     branches: [ "master" ]
 
@@ -18,6 +22,7 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
+        
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
@@ -28,9 +33,11 @@ jobs:
       run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
-      if: contains(github.event.head_commit.message, '[skip ci]') == false
+      if: contains(github.event.head_commit.message, '[skip ci]') != true
       run: mvn release:prepare -B -DskipTests --settings /opt/maven/conf/settings.xml
 
     - name: Nexus release perform
+      if: contains(github.event.head_commit.message, '[skip ci]') != true
       run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
+
       
