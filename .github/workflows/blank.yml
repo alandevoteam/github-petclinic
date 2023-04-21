@@ -2,13 +2,13 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
     # Only trigger on push events if the commit message does not contain "[skip ci]"
     # This will prevent an infinite loop of pipeline runs
     # See https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onpushpull_requestbranches
     if: '!(github.event.head_commit.message =~ /\[skip ci\]/i)'
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
 
 jobs:
   build:
