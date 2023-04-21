@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-framework-petclinic</artifactId>
-    <version>5.3.10</version>
+    <version>5.3.11-SNAPSHOT</version>
 
     <name>Spring Framework Petclinic</name>
     <packaging>war</packaging>
@@ -582,7 +582,7 @@
         <url>https://github.com/alandevoteam/github-petclinic</url>
         <connection>scm:git:git://github.com/alandevoteam/github-petclinic.git</connection>
         <developerConnection>scm:git:git@github.com:alandevoteam/github-petclinic.git</developerConnection>
-    <tag>5.3.10</tag>
+    <tag>HEAD</tag>
   </scm>
 
     
