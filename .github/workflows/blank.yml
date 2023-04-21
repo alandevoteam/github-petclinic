@@ -29,9 +29,9 @@ jobs:
       run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: mvn release:prepare -B -DskipTests --settings /opt/maven/conf/settings.xml
 
     - name: Nexus release perform
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
       run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
-
-      
