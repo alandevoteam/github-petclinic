@@ -29,12 +29,10 @@ jobs:
       run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
       
     - name: Nexus release prepare
-      if: startsWith(github.ref, 'refs/heads/') # Only run on Git push events
-      run: mvn release:prepare -B -DskipTests=true --settings /opt/maven/conf/settings.xml
+      run: mvn release:prepare -B -DskipTests=true --settings /opt/maven/conf/settings.xml -DscmCommentPrefix="[skip ci]"
 
     - name: Nexus release perform
-      if: startsWith(github.ref, 'refs/heads/') # Only run on Git push events
-      run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml
+      run: mvn release:perform -DskipTests --settings /opt/maven/conf/settings.xml -DscmCommentPrefix="[skip ci]"
 
     - name: Stop any further actions from running
       if: always()
