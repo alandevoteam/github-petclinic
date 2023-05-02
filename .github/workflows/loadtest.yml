@@ -1,0 +1,29 @@
+name: loadtest
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+    
+    - name: Maven clean install (skiptests)
+      run: mvn clean install -DskipTests --settings /opt/maven/conf/settings.xml
+      
+    - name: jmeter loadtest
+      run: jmeter -n -t github-petclinic/src/test/jmeter/petclinic_test_plan.jmx -l github-petclinic/src/test/jmeter/file.jtl
