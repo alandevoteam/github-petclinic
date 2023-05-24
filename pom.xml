@@ -316,6 +316,16 @@
                 <version>${maven-compiler-plugin.version}</version>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>maven-tomcat9-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <url>http:localhost:8080/manager/sample</url>
+                    <server>tomcat-server</server>
+                    <path>/rps</path>
+                </configuration>
+            </plugin>        
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
