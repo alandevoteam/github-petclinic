@@ -23,13 +23,13 @@ jobs:
       run: mvn -B package --file pom.xml
     
     - name: Maven clean install (skiptests)
-      run: mvn clean install -DskipTests --settings /opt/maven/conf/settings.xml
+      run: mvn clean install -DskipTests
     
     - name: Nexus deploy snapshot
-      run: mvn clean deploy -DskipTests --settings /opt/maven/conf/settings.xml
+      run: mvn clean deploy -DskipTests
       
     - name: Nexus release prepare
-      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]" --settings /opt/maven/conf/settings.xml
+      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
     - name: Nexus release perform
-      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]" --settings /opt/maven/conf/settings.xml
+      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
