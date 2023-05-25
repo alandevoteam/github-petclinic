@@ -41,5 +41,5 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t my-tomcat-app .
+        docker build -t my-tomcat-app -f ~/dockerfiles/Dockerfile .
         docker run -d -p 8080:8080 my-tomcat-app
