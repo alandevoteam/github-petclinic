@@ -28,6 +28,11 @@ jobs:
     - name: Nexus deploy snapshot
       run: mvn clean deploy -DskipTests
       
+    - name: Configure Git identity
+      run: |
+        git config --global user.email "alan.ahmad@devoteam.com"
+        git config --global user.name "alandevoteam"
+      
     - name: Nexus release prepare
       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
