@@ -38,3 +38,8 @@ jobs:
 
     - name: Nexus release perform
       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+
+    - name: Build Docker image
+      run: |
+        docker build -t my-tomcat-app .
+        docker run -d -p 8080:8080 my-tomcat-app
