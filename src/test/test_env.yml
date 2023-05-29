@@ -1,0 +1,215 @@
+---
+- name: Install on Azure VM
+  hosts: azure-vm
+  become: yes
+  vars:
+    docker_image_name: tomcat_deploy2_image
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker dependencies
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Maven
+      apt:
+        name: maven
+        state: present
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    
+    - name: Create Nginx directories
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+    - name: Create Nginx directories
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+
+    - name: Kill containers
+      shell: docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
+      ignore_errors: yes
+
+    - name: Create tomcat-users.xml
+      copy:
+        dest: /home/adminuser/tomcat-users.xml
+        content: |
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!--
+            Licensed to the Apache Software Foundation (ASF) under one or more
+            contributor license agreements.  See the NOTICE file distributed with
+            this work for additional information regarding copyright ownership.
+            The ASF licenses this file to You under the Apache License, Version 2.0
+            (the "License"); you may not use this file except in compliance with
+            the License.  You may obtain a copy of the License at
+
+                http://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software
+            distributed under the License is distributed on an "AS IS" BASIS,
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            See the License for the specific language governing permissions and
+            limitations under the License.
+          -->
+          <tomcat-users xmlns="http://tomcat.apache.org/xml"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
+                        version="1.0">
+
+          <user username="admin" password="admin" roles="admin-gui,manager-gui" />
+          <!--
+            By default, no user is included in the "manager-gui" role required
+            to operate the "/manager/html" web application.  If you wish to use this app,
+            you must define such a user - the username and password are arbitrary.
+
+            Built-in Tomcat manager roles:
+              - manager-gui    - allows access to the HTML GUI and the status pages
+              - manager-script - allows access to the HTTP API and the status pages
+              - manager-jmx    - allows access to the JMX proxy and the status pages
+              - manager-status - allows access to the status pages only
+
+            The users below are wrapped in a comment and are therefore ignored. If you
+            wish to configure one or more of these users for use with the manager web
+            application, do not forget to remove the <!.. ..> that surrounds them. You
+            will also need to set the passwords to something appropriate.
+          -->
+          <!--
+            <user username="admin" password="<must-be-changed>" roles="manager-gui"/>
+            <user username="robot" password="<must-be-changed>" roles="manager-script"/>
+          -->
+          <!--
+            The sample user and role entries below are intended for use with the
+            examples web application. They are wrapped in a comment and thus are ignored
+            when reading this file. If you wish to configure these users for use with the
+            examples web application, do not forget to remove the <!.. ..> that surrounds
+            them. You will also need to set the passwords to something appropriate.
+          -->
+          <!--
+            <role rolename="tomcat"/>
+            <role rolename="role1"/>
+            <user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+            <user username="both" password="<must-be-changed>" roles="tomcat,role1"/>
+            <user username="role1" password="<must-be-changed>" roles="role1"/>
+          -->
+          </tomcat-users>
+
+    - name: Create context.xml
+      copy:
+        dest: /home/adminuser/context.xml
+        content: |
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!--
+            Licensed to the Apache Software Foundation (ASF) under one or more
+            contributor license agreements.  See the NOTICE file distributed with
+            this work for additional information regarding copyright ownership.
+            The ASF licenses this file to You under the Apache License, Version 2.0
+            (the "License"); you may not use this file except in compliance with
+            the License.  You may obtain a copy of the License at
+
+                http://www.apache.org/licenses/LICENSE-2.0
+
+            Unless required by applicable law or agreed to in writing, software
+            distributed under the License is distributed on an "AS IS" BASIS,
+            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+            See the License for the specific language governing permissions and
+            limitations under the License.
+          -->
+          <Context antiResourceLocking="false" privileged="true" >
+            <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"
+                            sameSiteCookies="strict" />
+          <!--
+            <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+                  allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+                  -->
+            <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
+          </Context>
+
+    - name: Copy file
+      copy:
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/petclinic.war
+        dest: /home/adminuser/petclinic.war
+
+
+    - name: Create Dockerfile
+      copy:
+        dest: /home/adminuser/Dockerfile
+        content: |
+          FROM ubuntu:latest 
+          RUN apt-get -y update && apt-get -y upgrade
+          RUN apt-get -y install openjdk-8-jdk wget
+          RUN mkdir /usr/local/tomcat
+          RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.75/bin/apache-tomcat-9.0.75.tar.gz -O /tmp/tomcat.tar.gz
+          RUN cd /tmp && tar xvfz tomcat.tar.gz
+          RUN cp -Rv /tmp/apache-tomcat-9.0.75/* /usr/local/tomcat/
+          ADD tomcat-users.xml /usr/local/tomcat/conf/
+          ADD context.xml /usr/local/tomcat/webapps/manager/META-INF
+          ADD petclinic.war /usr/local/tomcat/webapps/
+          EXPOSE 8080
+          CMD /usr/local/tomcat/bin/catalina.sh run
+
+    - name: Build Docker image
+      shell: docker build -t {{ docker_image_name }} /home/adminuser
+
+    - name: Run Docker container
+      shell: docker run -d -p 8080:8080 --name my-container {{ docker_image_name }}
+
+    - name: Configure Nginx
+      copy:
+        dest: /etc/nginx/sites-available/testpetclinic
+        content: |
+          upstream tomcat {
+              server 127.0.0.1:8080;
+          }
+
+          server {
+              listen 80;
+              server_name testpetclinic.westeurope.cloudapp.azure.com;
+
+              location / {
+                  proxy_pass http://tomcat/;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection "upgrade";
+                  proxy_set_header Host $http_host;
+
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto http;
+                  proxy_set_header X-Nginx-Proxy true;
+
+                  proxy_redirect off;
+              }
+          }
+
+    - name: Enable Nginx server block
+      command: ln -s /etc/nginx/sites-available/testpetclinic /etc/nginx/sites-enabled/
+      args:
+        creates: /etc/nginx/sites-enabled/testpetclinic
+
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted
