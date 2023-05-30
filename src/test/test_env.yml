@@ -147,7 +147,7 @@
             <Manager sessionAttributeValueClassNameFilter="java\.lang\.(?:Boolean|Integer|Long|Number|String)|org\.apache\.catalina\.filters\.CsrfPreventionFilter\$LruCache(?:\$1)?|java\.util\.(?:Linked)?HashMap"/>
           </Context>
 
-    - name: Copy file
+    - name: Copy warfile local to test-env
       copy:
         src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/petclinic.war
         dest: /home/adminuser/petclinic.war
