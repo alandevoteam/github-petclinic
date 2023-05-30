@@ -42,6 +42,9 @@ jobs:
     - name: setup test + acceptance environment
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/test_env.yml
 
+    - name: jmeter loadtest
+      run: /opt/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/petclinic_test_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/file.jtl
+
     - name: selenium test
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
 
