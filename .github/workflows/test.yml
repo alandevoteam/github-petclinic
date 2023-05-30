@@ -22,13 +22,13 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     
-    - name: Maven clean install (skiptests)
+    - name: Maven clean install
       run: mvn clean install -DskipTests
     
     - name: Nexus deploy snapshot
       run: mvn clean deploy -DskipTests
       
-    - name: Configure Git identity
+    - name: Confirm Git identity
       run: |
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
@@ -39,7 +39,7 @@ jobs:
     - name: Nexus release perform
       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
-    - name: setup test + acceptance environment
+    - name: setup test+acceptance environment
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/test_env.yml
 
     - name: jmeter loadtest
