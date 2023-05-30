@@ -1,0 +1,15 @@
+---
+- name: tomcat online on Azure VM
+  hosts: azure-vm
+  become: yes
+  vars:
+    docker_image_name: tomcat_deploy2_image
+
+  tasks:
+    - name: Run Docker container
+      shell: docker run -d -p 8080:8080 --name my-container {{ docker_image_name }}
+
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted
