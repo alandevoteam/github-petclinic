@@ -127,7 +127,7 @@
       args:
         creates: /etc/nginx/sites-enabled/testpetclinic
 
-    - name: Restart Nginx service
+    - name: Start Nginx service
       service:
         name: nginx
-        state: restarted
+        state: started
