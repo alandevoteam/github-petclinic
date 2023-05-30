@@ -47,21 +47,21 @@ telephone_field = driver.find_element(By.ID, "telephone")
 telephone_field.send_keys("0616263646")  # Enter the desired telephone number
 
 # Introduce a delay to ensure the page has finished loading
-time.sleep(2)
+time.sleep(5)
 
 # Click the "Add Owner" button
 add_owner_button = driver.find_element(By.XPATH, "//button[contains(text(), 'Add Owner')]")
 add_owner_button.click()
 
 # Introduce a delay to ensure the page has finished loading
-time.sleep(2)
+time.sleep(5)
 
 # Click the "Add New Pet" button
 add_pet_link = driver.find_element(By.LINK_TEXT, "Add New Pet")
 add_pet_link.click()
 
 # Introduce a delay to ensure the page has finished loading
-time.sleep(2)
+time.sleep(5)
 
 # Fill in the fields for adding a new pet
 name_field = driver.find_element(By.ID, "name")
