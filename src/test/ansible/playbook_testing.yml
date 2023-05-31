@@ -56,7 +56,7 @@
 
     - name: Copy warfile local to test-environment
       copy:
-        src: /home/alan/Downloads/petclinic.war
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/petclinic.war
         dest: /home/adminuser/petclinic.war
 
     - name: Create Dockerfile
