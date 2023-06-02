@@ -43,7 +43,19 @@
       file:
         path: /etc/nginx/sites-enabled
         state: directory
+        
+    - name: Remove default Nginx file from sites-available if it exists
+      file:
+        path: /etc/nginx/sites-available/default
+        state: absent
+      ignore_errors: yes
 
+    - name: Remove default Nginx file from sites-enabled if it exists
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      ignore_errors: yes
+      
     - name: Copy tomcat-users.xml
       copy:
         src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/tomcat/tomcat-users.xml
