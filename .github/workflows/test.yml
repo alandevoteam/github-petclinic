@@ -24,39 +24,36 @@ jobs:
     
     - name: Maven clean install
       run: mvn clean install -DskipTests
-    
-    - name: Nexus deploy snapshot
-      run: mvn clean deploy -DskipTests
       
     - name: Confirm Git identity
       run: |
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
+
+#     - name: Nexus deploy snapshot
+#       run: mvn clean deploy -DskipTests
       
-    - name: Nexus release prepare
-      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
+#     - name: Nexus release prepare
+#       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-    - name: Nexus release perform
-      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+#     - name: Nexus release perform
+#       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
-    - name: Run Terraform
+    - name: Run Terraform, set up Azure cloud infrastructure
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
         terraform init
         terraform apply -auto-approve
 
-    - name: Prepare environment for testing & acceptance on Azure VM
+    - name: Prepare testing environment
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
-    - name: jmeter loadtest
+    - name: test environment completed, jmeter loadtest
       run: /opt/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/petclinic_test_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/file.jtl
 
-    - name: selenium test, add new owner and a new pet
+    - name: Prepare acceptance environment
+      run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
+
+    - name: acceptance environment completed, selenium test, add new owner and a new pet
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
       
-#     - name: Testing & acceptance completed, delete test-environment Azure VM
-#       run: |
-
-    - name: move production from local to cloud VM
-      run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_prodenv.yml
-
