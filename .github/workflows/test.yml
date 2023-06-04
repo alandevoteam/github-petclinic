@@ -56,13 +56,6 @@ jobs:
       
 #     - name: Testing & acceptance completed, delete test-environment Azure VM
 #       run: |
-#         az network vnet delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.Network/virtualNetworks/test-vnet"
-#         az network nsg delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.Network/networkSecurityGroups/test-nsg"
-#         az network nic delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.Network/networkInterfaces/test-nic"
-#         az network public-ip delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.Network/publicIPAddresses/test-pip"
-#         az compute disk delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/ALAN_AHMAD-RG/providers/Microsoft.Compute/disks/testOsDisk"
-#         az compute vm delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.Compute/virtualMachines/testing-vm"
-#         az devtestlab schedule delete --ids "/subscriptions/41e50375-b926-4bc4-9045-348f359cf721/resourceGroups/alan_ahmad-rg/providers/Microsoft.DevTestLab/schedules/shutdown-computevm-testing-vm"
 
     - name: move production from local to cloud VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_prodenv.yml
