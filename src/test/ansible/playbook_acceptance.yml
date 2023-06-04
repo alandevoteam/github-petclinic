@@ -131,7 +131,7 @@
           }
 
     - name: Enable Nginx server block
-      command: sudo ln -s /etc/nginx/sites-available/prodpetclinic /etc/nginx/sites-enabled/
+      command: sudo ln -s /etc/nginx/sites-available/xptpetclinic /etc/nginx/sites-enabled/
       args:
         creates: /etc/nginx/sites-enabled/xptpetclinic
 
