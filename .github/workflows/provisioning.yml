@@ -50,13 +50,13 @@ jobs:
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
 # FIX JMETER!
-    - name: test environment completed, start jmeter loadtest
+    - name: test environment created, start jmeter loadtest
       run: /opt/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/petclinic_test_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/file.jtl
 
-    - name: Jmeter loadtest passed, Prepare acceptance environment
+    - name: No fallback, Jmeter loadtest passed, Prepare acceptance environment
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
-    - name: acceptance environment completed, start selenium test, add new owner and a new pet
+    - name: acceptance environment created, start selenium test, fallback if test fails
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
 
 # FIX DESTROY!
