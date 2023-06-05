@@ -69,7 +69,7 @@
 
     - name: Copy warfile local to test-environment
       copy:
-        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/{{ warfile_name }}
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/target/{{ warfile_name }}
         dest: /home/adminuser/{{ warfile_name }}
 
     - name: Stop and remove existing Docker containers
