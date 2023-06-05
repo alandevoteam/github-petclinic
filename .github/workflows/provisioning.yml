@@ -33,17 +33,17 @@ jobs:
 #     - name: Nexus release perform
 #       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
+    - name: Get warfile from Nexus repository
+      run: |
+        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
+        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
+    
     - name: Run Terraform, set up Azure cloud infrastructure
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
         terraform init
         terraform apply -auto-approve
         
-    - name: Get warfile from Nexus repository
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
-        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
-    
     - name: Delay for 20 seconds
       run: sleep 20
         
@@ -58,3 +58,8 @@ jobs:
 
     - name: acceptance environment created, start selenium test, fallback if test fails
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
+      
+#   destroy TEST ACCEPTANCE environments
+
+#   move production local to PRODUCTION vm
+      
