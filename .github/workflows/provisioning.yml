@@ -18,12 +18,6 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
-        
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
-    
-    - name: Maven clean install
-      run: mvn clean install -DskipTests
       
     - name: Confirm Git identity
       run: |
@@ -50,14 +44,14 @@ jobs:
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/
         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
 
-    - name: Prepare testing environment
+    - name: Prepare testing environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
 # FIX JMETER!
     - name: test environment created, start jmeter loadtest
       run: /opt/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/petclinic_test_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/jmeter/file.jtl
 
-    - name: No fallback, Jmeter loadtest passed, Prepare acceptance environment
+    - name: No fallback, Jmeter loadtest passed, Prepare acceptance environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
     - name: acceptance environment created, start selenium test, fallback if test fails
