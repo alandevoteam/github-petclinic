@@ -24,25 +24,28 @@ jobs:
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
 
-#     - name: Nexus deploy snapshot
-#       run: mvn clean deploy -DskipTests
+    - name: Nexus deploy snapshot
+      run: mvn clean deploy -DskipTests
       
-#     - name: Nexus release prepare
-#       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
+    - name: Nexus release prepare
+      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-#     - name: Nexus release perform
-#       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+    - name: Nexus release perform
+      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
-#     - name: Get warfile from Nexus repository
-#       run: |
-#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
-#         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
-
-#     - name: Run Terraform, set up Azure cloud infrastructure
-#       run: |
-#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-#         terraform init
-#         terraform apply -auto-approve
+    - name: Run Terraform, set up Azure cloud infrastructure
+      run: |
+        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+        terraform init
+        terraform apply -auto-approve
+        
+    - name: Get warfile from Nexus repository
+      run: |
+        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
+        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
+    
+    - name: Delay for 20 seconds
+      run: sleep 20
         
     - name: Prepare testing environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
