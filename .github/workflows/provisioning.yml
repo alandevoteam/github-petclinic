@@ -24,12 +24,6 @@ jobs:
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
 
-    - name: Run Terraform, set up Azure cloud infrastructure
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-        terraform init
-        terraform apply -auto-approve
-
     - name: Nexus deploy snapshot
       run: mvn clean deploy -DskipTests
       
@@ -44,6 +38,12 @@ jobs:
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
 
+    - name: Run Terraform, set up Azure cloud infrastructure
+      run: |
+        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+        terraform init
+        terraform apply -auto-approve
+        
     - name: Prepare testing environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
