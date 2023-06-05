@@ -47,7 +47,6 @@ jobs:
     - name: Prepare testing environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
-# FIX JMETER!
     - name: test environment created, start jmeter loadtest
       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
@@ -56,5 +55,3 @@ jobs:
 
     - name: acceptance environment created, start selenium test, fallback if test fails
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
-
-# FIX DESTROY!
