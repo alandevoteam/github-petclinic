@@ -68,8 +68,8 @@
 
     - name: Copy warfile local to test-environment
       copy:
-        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/petclinic.war
-        dest: /home/adminuser/petclinic.war
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/target/checkout/target/petclinic-5.3.8.war
+        dest: /home/adminuser/petclinic-5.3.8.war
 
     - name: Stop and remove existing Docker containers
       shell: docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
@@ -92,7 +92,7 @@
           RUN cp -Rv /tmp/apache-tomcat-9.0.75/* /usr/local/tomcat/
           ADD tomcat-users.xml /usr/local/tomcat/conf/
           ADD context.xml /usr/local/tomcat/webapps/manager/META-INF
-          ADD petclinic.war /usr/local/tomcat/webapps/
+          ADD petclinic-5.3.8.war /usr/local/tomcat/webapps/
           EXPOSE 8080
           CMD /usr/local/tomcat/bin/catalina.sh run
 
