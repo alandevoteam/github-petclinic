@@ -47,7 +47,7 @@ jobs:
         terraform apply -auto-approve
         
     - name: Wait till all the resources are available in AZURE PORTAL
-      run: sleep 120
+      run: sleep 100
         
     - name: Prepare testing environment on VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
@@ -61,8 +61,8 @@ jobs:
     - name: acceptance environment created, start selenium test, fallback if test fails
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
 
-#     - name: move production to production VM
-#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
+    - name: move production to production VM
+      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
 
-#     - name: Check petclinic in browser
-#       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
+    - name: Check petclinic in browser
+      run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
