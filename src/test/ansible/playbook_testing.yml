@@ -4,7 +4,7 @@
   become: yes
   vars:
     docker_image_name: tomcat-petclinic
-    warfile_name: spring-framework-petclinic-5.3.9.war
+    warfile_name: spring-framework-petclinic-5.3.10.war
 
   tasks:
     - name: Update apt cache
