@@ -70,8 +70,11 @@
     - name: Copy warfile local to test-environment
       copy:
         src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/spring-framework-petclinic-{{ VERSION }}.war
-        dest: /home/adminuser/spring-framework-petclinic-{{ VERSION }}.WAR
+        dest: /home/adminuser/spring-framework-petclinic-{{ VERSION }}.war
 
+    - name: change warfile name
+      shell: mv /home/adminuser/spring-framework-petclinic-{{ VERSION }}.war home/adminuser/petclinic.war
+      
     - name: Stop and remove existing Docker containers
       shell: docker stop $(docker ps -aq) && docker rm $(docker ps -aq)
       ignore_errors: yes
@@ -93,7 +96,7 @@
           RUN cp -Rv /tmp/apache-tomcat-9.0.75/* /usr/local/tomcat/
           ADD tomcat-users.xml /usr/local/tomcat/conf/
           ADD context.xml /usr/local/tomcat/webapps/manager/META-INF
-          ADD {{ warfile_name }} /usr/local/tomcat/webapps/
+          ADD petclinic.war /usr/local/tomcat/webapps/
           EXPOSE 8080
           CMD /usr/local/tomcat/bin/catalina.sh run
 
