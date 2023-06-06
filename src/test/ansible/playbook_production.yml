@@ -1,0 +1,108 @@
+---
+- name: Install on Azure VM
+  hosts: [production-vm]
+  become: yes
+  vars:
+    docker_image_name: alandevoteam/tomcat-petclinic
+    VERSION: 5.3.10
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Docker dependencies
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    
+    - name: Create Nginx directories
+      file:
+        path: /etc/nginx/sites-available
+        state: directory
+
+    - name: Create Nginx directories
+      file:
+        path: /etc/nginx/sites-enabled
+        state: directory
+
+    - name: Remove default Nginx file from sites-available if it exists
+      file:
+        path: /etc/nginx/sites-available/default
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove default Nginx file from sites-enabled if it exists
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      ignore_errors: yes
+
+    - name: Docker Hub Login
+      docker_login:
+        username: alandevoteam
+        password: dckr_pat_Lf07J2YB_Y0TlYmrk059HQpb4OQ
+        registry_url: https://index.docker.io/v1/
+        
+    - name: Pull docker image
+      shell: docker pull {{ docker_image_name }}:{{ VERSION }} 
+
+    - name: Run Docker container
+      shell: docker run -d -p 8080:8080 {{ docker_image_name }}:{{ VERSION }} 
+
+    - name: Configure Nginx
+      copy:
+        dest: /etc/nginx/sites-available/xptpetclinic
+        content: |
+          upstream tomcat {
+              server 127.0.0.1:8080;
+          }
+
+          server {
+              listen 80;
+              server_name prodpetclinic.westeurope.cloudapp.azure.com/;
+
+              location / {
+                  proxy_pass http://tomcat/;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection "upgrade";
+                  proxy_set_header Host $http_host;
+
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto http;
+                  proxy_set_header X-Nginx-Proxy true;
+
+                  proxy_redirect off;
+              }
+          }
+
+    - name: Enable Nginx server block
+      command: sudo ln -s /etc/nginx/sites-available/prodpetclinic /etc/nginx/sites-enabled/
+      args:
+        creates: /etc/nginx/sites-enabled/prodpetclinic
+
+    - name: Restart Nginx service
+      service:
+        name: nginx
+        state: restarted
