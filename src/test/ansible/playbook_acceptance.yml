@@ -4,7 +4,7 @@
   become: yes
   vars:
     docker_image_name: alandevoteam/tomcat-petclinic
-    VERSION: 5.3.10
+    VERSION: 5.3.11
 
   tasks:
     - name: Update apt cache
