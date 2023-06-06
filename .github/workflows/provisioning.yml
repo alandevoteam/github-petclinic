@@ -24,14 +24,14 @@ jobs:
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
 
-#     - name: Nexus deploy snapshot
-#       run: mvn clean deploy -DskipTests
+    - name: Nexus deploy snapshot
+      run: mvn clean deploy -DskipTests
       
-#     - name: Nexus release prepare
-#       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
+    - name: Nexus release prepare
+      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-#     - name: Nexus release perform
-#       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+    - name: Nexus release perform
+      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
     - name: Get warfile from Nexus repository
       run: |
