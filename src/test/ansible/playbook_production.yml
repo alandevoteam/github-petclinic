@@ -71,7 +71,7 @@
 
     - name: Configure Nginx
       copy:
-        dest: /etc/nginx/sites-available/xptpetclinic
+        dest: /etc/nginx/sites-available/prodpetclinic
         content: |
           upstream tomcat {
               server 127.0.0.1:8080;
