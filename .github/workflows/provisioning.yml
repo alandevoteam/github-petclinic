@@ -55,7 +55,10 @@ jobs:
     - name: test environment created, start jmeter loadtest
       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
-    - name: No fallback, Jmeter loadtest passed, Prepare acceptance environment on VM
+    - name: No fallback, Jmeter loadtest passed, Push docker image to docker hub
+      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
+
+    - name: Prepare acceptance environment on VM, pull image
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
     - name: acceptance environment created, start selenium test, fallback if test fails
@@ -66,3 +69,21 @@ jobs:
 
     - name: Check petclinic in browser
       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
+      
+    - name: Run Terraform destroy, delete TEST & ACCEPTANCE environments
+      run: |
+        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+        terraform state pull > bkup.json
+        terraform state list
+        terraform state rm azurerm_dev_test_global_vm_shutdown_schedule.production
+        terraform state rm azurerm_linux_virtual_machine.production
+        terraform state rm azurerm_network_interface.production
+        terraform state rm azurerm_network_security_group.production
+        terraform state rm azurerm_network_security_rule.production
+        terraform state rm azurerm_public_ip.production
+        terraform state rm azurerm_resource_group.test
+        terraform state rm azurerm_subnet.production
+        terraform state rm azurerm_subnet_network_security_group_association.production
+        terraform state rm azurerm_virtual_network.production
+        terraform destroy -auto-approve
+
