@@ -44,8 +44,8 @@ jobs:
         terraform init
         terraform apply -auto-approve
         
-    - name: Delay for 20 seconds
-      run: sleep 20
+    - name: Delay for 100 seconds
+      run: sleep 100
         
     - name: Prepare testing environment on VM
       run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
