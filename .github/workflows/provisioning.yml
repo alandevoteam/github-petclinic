@@ -36,7 +36,7 @@ jobs:
     - name: Get warfile from Nexus repository
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
-        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.9.war
+        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/5.3.9/spring-framework-petclinic-5.3.10.war
     
     - name: Run Terraform, set up Azure cloud infrastructure
       run: |
