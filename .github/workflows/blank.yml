@@ -38,7 +38,7 @@ jobs:
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
       env:
-        VERSION: 5.3.16
+        VERSION: 5.3.17
   
     - name: Update ansible inventory.ini to update release VERSION
       run: |
@@ -53,7 +53,7 @@ jobs:
         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
       env:
-        VERSION: 5.3.16
+        VERSION: 5.3.17
   
     - name: Run Terraform, set up infrastructure in AZURE CLOUD
       run: |
