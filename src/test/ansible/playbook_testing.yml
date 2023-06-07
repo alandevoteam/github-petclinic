@@ -4,7 +4,6 @@
   become: yes
   vars:
     docker_image_name: alandevoteam/tomcat-petclinic
-    VERSION: 5.3.14
 
   tasks:
     - name: Update apt cache
@@ -69,7 +68,7 @@
 
     - name: Copy warfile local to test-environment
       copy:
-        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/spring-framework-petclinic-{{ VERSION }}.war
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/spring-framework-petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war
         dest: /home/adminuser/petclinic.war
 
     - name: Create Dockerfile
@@ -90,10 +89,10 @@
           CMD /usr/local/tomcat/bin/catalina.sh run
 
     - name: Build Docker image
-      shell: docker build -t {{ docker_image_name }}:{{ VERSION }} /home/adminuser
+      shell: docker build -t {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }} /home/adminuser
 
     - name: Run Docker container
-      shell: docker run -d -p 8080:8080 {{ docker_image_name }}:{{ VERSION }}
+      shell: docker run -d -p 8080:8080 {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
       
     - name: Configure Nginx
       copy:
