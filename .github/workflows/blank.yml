@@ -24,9 +24,9 @@ jobs:
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
 
-    - name: Get Git tag version
-      id: git_tag
-      run: echo "::set-output name=tag::$(git describe --abbrev=0 --tags | sed 's/-SNAPSHOT//')"
+    - name: Set static version
+      id: set_version
+      run: echo "::set-output name=version::5.3.20"
 
     - name: mvn deploy snapshot (Nexus)
       run: mvn clean deploy -DskipTests
@@ -42,7 +42,7 @@ jobs:
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
       env:
-        VERSION: ${{ steps.git_tag.outputs.tag }}
+        VERSION: ${{ steps.set_version.outputs.version }}
   
     - name: Update ansible inventory.ini to update release VERSION
       run: |
@@ -57,7 +57,7 @@ jobs:
         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
       env:
-        VERSION: ${{ steps.git_tag.outputs.tag }}
+        VERSION: ${{ steps.set_version.outputs.version }}
   
     - name: Run Terraform, set up infrastructure in AZURE CLOUD
       run: |
@@ -68,22 +68,22 @@ jobs:
     - name: Wait till all the resources are available in AZURE CLOUD
       run: sleep 90
         
-    - name: configure test environment on testing-VM with Ansible, install dependencies
+    - name: Ansible playbook configure test-environment on Test-VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
-    - name: test environment configured, start jmeter loadtest
+    - name: Test-environment configured, start jmeter loadtest
       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
-    - name: No fallback, Jmeter loadtest passed, Push docker image to docker hub
+    - name: Jmeter loadtest passed, Push docker image to docker hub
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
-    - name: Prepare acceptance environment on VM-2, pull image
+    - name: Prepare acceptance environment on Acceptance-VM, pull image from Docker Hub
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
-    - name: acceptance environment created, start selenium test, fallback if test fails
+    - name: Acceptance environment created, start selenium test
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
 
-    - name: move production to acceptance-VM
+    - name: Selenium test passed, move production to production-VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
 
     - name: Check petclinic in browser
