@@ -28,80 +28,80 @@ jobs:
       id: set_version
       run: echo "::set-output name=version::5.3.23"
 
-    - name: mvn deploy snapshot (Nexus)
-      run: mvn clean deploy -DskipTests
+#     - name: mvn deploy snapshot (Nexus)
+#       run: mvn clean deploy -DskipTests
       
-    - name: mvn release prepare (Nexus)
-      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
+#     - name: mvn release prepare (Nexus)
+#       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-    - name: mvn release perform (Nexus)
-      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+#     - name: mvn release perform (Nexus)
+#       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
-    - name: Get warfile from Nexus repository
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
-        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
-      env:
-        VERSION: ${{ steps.set_version.outputs.version }}
+#     - name: Get warfile from Nexus repo
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
+#         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
+#       env:
+#         VERSION: ${{ steps.set_version.outputs.version }}
   
-    - name: Update ansible inventory.ini to update release VERSION
-      run: |
-        echo "[testing-vm]" > ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/testazurekey VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#     - name: Update ansible with release VERSION
+#       run: |
+#         echo "[testing-vm]" > ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/testazurekey VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
-        echo "[acceptance-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/acceptvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "[acceptance-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/acceptvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
-        echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-      env:
-        VERSION: ${{ steps.set_version.outputs.version }}
+#         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+#       env:
+#         VERSION: ${{ steps.set_version.outputs.version }}
   
-    - name: Run Terraform, set up infrastructure in AZURE CLOUD
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-        terraform init
-        terraform apply -auto-approve
+#     - name: Run Terraform, set up infrastructure in AZURE CLOUD
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+#         terraform init
+#         terraform apply -auto-approve
         
-    - name: Wait till all the resources are available in AZURE CLOUD
-      run: sleep 90
+#     - name: Wait till all the resources are available in AZURE CLOUD
+#       run: sleep 60
         
-    - name: Ansible playbook configure test-environment on Test-VM
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
+#     - name: Ansible configure test-environment on Test-VM
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
-    - name: Test-environment configured, start jmeter loadtest
-      run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
+#     - name: Test-environment configured, start jmeter loadtest
+#       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
-    - name: Jmeter loadtest passed, Push docker image to docker hub
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
+#     - name: Jmeter loadtest passed, Push docker image to docker hub
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
-    - name: Prepare acceptance environment on Acceptance-VM, pull image from Docker Hub
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
+#     - name: Configure acceptance environment on Acceptance-VM, pull image from Docker Hub
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
-    - name: Acceptance environment created, start selenium test
-      run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
-
-    - name: Selenium test passed, move production to production-VM
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
-
-    - name: Check petclinic in browser
-      run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
+#     - name: Acceptance environment created, start selenium test
+#       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
       
-    - name: Run Terraform destroy, delete TEST & ACCEPTANCE environments
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-        terraform state pull > bkup.json
-        terraform state list
-        terraform state rm azurerm_dev_test_global_vm_shutdown_schedule.production
-        terraform state rm azurerm_linux_virtual_machine.production
-        terraform state rm azurerm_network_interface.production
-        terraform state rm azurerm_network_security_group.production
-        terraform state rm azurerm_network_security_rule.production
-        terraform state rm azurerm_public_ip.production
-        terraform state rm azurerm_resource_group.test
-        terraform state rm azurerm_subnet.production
-        terraform state rm azurerm_subnet_network_security_group_association.production
-        terraform state rm azurerm_virtual_network.production
-        terraform destroy -auto-approve
+#     - name: Selenium test passed, delete TEST & ACCEPTANCE environments
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+#         terraform state pull > bkup.json
+#         terraform state list
+#         terraform state rm azurerm_dev_test_global_vm_shutdown_schedule.production
+#         terraform state rm azurerm_linux_virtual_machine.production
+#         terraform state rm azurerm_network_interface.production
+#         terraform state rm azurerm_network_security_group.production
+#         terraform state rm azurerm_network_security_rule.production
+#         terraform state rm azurerm_public_ip.production
+#         terraform state rm azurerm_resource_group.test
+#         terraform state rm azurerm_subnet.production
+#         terraform state rm azurerm_subnet_network_security_group_association.production
+#         terraform state rm azurerm_virtual_network.production
+#         terraform destroy -auto-approve
+        
+#     - name: Ansible, production to Production-VM
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
+
+#     - name: Check petclinic in chrome browser
+#       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
