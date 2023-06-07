@@ -64,7 +64,7 @@ jobs:
         terraform init
         terraform apply -auto-approve
         
-    - name: Wait till all the resources are available in AZURE CLOUD
+    - name: Terraform Infrastructure task completed
       run: sleep 60
         
     - name: Prepare test-environment on Test-VM
