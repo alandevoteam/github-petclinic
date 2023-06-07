@@ -32,16 +32,16 @@ add_owner_link.click()
 
 # Fill in the fields for adding an owner
 first_name_field = driver.find_element(By.ID, "firstName")
-first_name_field.send_keys("Alan")  # Enter the desired first name
+first_name_field.send_keys("Ash")  # Enter the desired first name
 
 last_name_field = driver.find_element(By.ID, "lastName")
-last_name_field.send_keys("Ahmad")  # Enter the desired last name
+last_name_field.send_keys("Ketchum")  # Enter the desired last name
 
 address_field = driver.find_element(By.ID, "address")
-address_field.send_keys("Paasheuvel 26")  # Enter the desired address
+address_field.send_keys("Delia 29")  # Enter the desired address
 
 city_field = driver.find_element(By.ID, "city")
-city_field.send_keys("Amsterdam")  # Enter the desired city
+city_field.send_keys("Pallet Town")  # Enter the desired city
 
 telephone_field = driver.find_element(By.ID, "telephone")
 telephone_field.send_keys("0616263646")  # Enter the desired telephone number
