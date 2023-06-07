@@ -24,80 +24,80 @@ jobs:
         git config --global user.email "alan.ahmad@devoteam.com"
         git config --global user.name "alandevoteam"
 
-    - name: mvn deploy snapshot (Nexus)
-      run: mvn clean deploy -DskipTests
+#     - name: mvn deploy snapshot (Nexus)
+#       run: mvn clean deploy -DskipTests
       
-    - name: mvn release prepare (Nexus)
-      run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
+#     - name: mvn release prepare (Nexus)
+#       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-    - name: mvn release perform (Nexus)
-      run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
+#     - name: mvn release perform (Nexus)
+#       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
-    - name: Get warfile from Nexus repository
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
-        wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
-      env:
-        VERSION: 5.3.15
+#     - name: Get warfile from Nexus repository
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/
+#         wget http://localhost:8081/repository/maven-releases/org/springframework/samples/spring-framework-petclinic/$VERSION/spring-framework-petclinic-$VERSION.war
+#       env:
+#         VERSION: 5.3.15
   
     - name: Update ansible inventory.ini to use the right lease VERSION
       run: |
         echo "[testing-vm]" > ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/testazurekey VERSION=5.3.14" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/testazurekey VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
         echo "[acceptance-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/acceptvm VERSION=5.3.14" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/acceptvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=5.3.14" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=$VERSION" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
       env:
         VERSION: 5.3.15
   
-    - name: Run Terraform, set up infrastructure in AZURE CLOUD
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-        terraform init
-        terraform apply -auto-approve
+#     - name: Run Terraform, set up infrastructure in AZURE CLOUD
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+#         terraform init
+#         terraform apply -auto-approve
         
-    - name: Wait till all the resources are available in AZURE CLOUD
-      run: sleep 90
+#     - name: Wait till all the resources are available in AZURE CLOUD
+#       run: sleep 90
         
-    - name: configure test environment on testing-VM with Ansible, install dependencies
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
+#     - name: configure test environment on testing-VM with Ansible, install dependencies
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
 
-    - name: test environment configured, start jmeter loadtest
-      run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
+#     - name: test environment configured, start jmeter loadtest
+#       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
-    - name: No fallback, Jmeter loadtest passed, Push docker image to docker hub
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
+#     - name: No fallback, Jmeter loadtest passed, Push docker image to docker hub
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
-    - name: Prepare acceptance environment on VM-2, pull image
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
+#     - name: Prepare acceptance environment on VM-2, pull image
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
-    - name: acceptance environment created, start selenium test, fallback if test fails
-      run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
+#     - name: acceptance environment created, start selenium test, fallback if test fails
+#       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
 
-    - name: move production to acceptance-VM
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
+#     - name: move production to acceptance-VM
+#       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
 
-    - name: Check petclinic in browser
-      run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
+#     - name: Check petclinic in browser
+#       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
       
-    - name: Run Terraform destroy, delete TEST & ACCEPTANCE environments
-      run: |
-        cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
-        terraform state pull > bkup.json
-        terraform state list
-        terraform state rm azurerm_dev_test_global_vm_shutdown_schedule.production
-        terraform state rm azurerm_linux_virtual_machine.production
-        terraform state rm azurerm_network_interface.production
-        terraform state rm azurerm_network_security_group.production
-        terraform state rm azurerm_network_security_rule.production
-        terraform state rm azurerm_public_ip.production
-        terraform state rm azurerm_resource_group.test
-        terraform state rm azurerm_subnet.production
-        terraform state rm azurerm_subnet_network_security_group_association.production
-        terraform state rm azurerm_virtual_network.production
-        terraform destroy -auto-approve
+#     - name: Run Terraform destroy, delete TEST & ACCEPTANCE environments
+#       run: |
+#         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
+#         terraform state pull > bkup.json
+#         terraform state list
+#         terraform state rm azurerm_dev_test_global_vm_shutdown_schedule.production
+#         terraform state rm azurerm_linux_virtual_machine.production
+#         terraform state rm azurerm_network_interface.production
+#         terraform state rm azurerm_network_security_group.production
+#         terraform state rm azurerm_network_security_rule.production
+#         terraform state rm azurerm_public_ip.production
+#         terraform state rm azurerm_resource_group.test
+#         terraform state rm azurerm_subnet.production
+#         terraform state rm azurerm_subnet_network_security_group_association.production
+#         terraform state rm azurerm_virtual_network.production
+#         terraform destroy -auto-approve
