@@ -4,7 +4,6 @@
   become: yes
   vars:
     docker_image_name: alandevoteam/tomcat-petclinic
-    VERSION: 5.3.14
 
   tasks:
     - name: Update apt cache
@@ -64,10 +63,10 @@
         registry_url: https://index.docker.io/v1/
         
     - name: Pull docker image
-      shell: docker pull {{ docker_image_name }}:{{ VERSION }} 
+      shell: docker pull {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
 
     - name: Run Docker container
-      shell: docker run -d -p 8080:8080 {{ docker_image_name }}:{{ VERSION }} 
+      shell: docker run -d -p 8080:8080 {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
 
     - name: Configure Nginx
       copy:
