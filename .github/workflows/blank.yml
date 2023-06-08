@@ -61,9 +61,9 @@ jobs:
     - name: Update Selenium test script with version number
       run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
    
-    - name: Update Jmeter loadtest script with version number
-      run: sed -i "s|<stringProp name=\"HTTPSampler.path\">/petclinic-</stringProp>|<stringProp name=\"HTTPSampler.path\">/petclinic-${{ steps.extract_version.outputs.version }}/</stringProp>|" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx
-
+    - name: Update JMeter loadtest script with version number
+      run: sed -i "s#<stringProp name=\"HTTPSampler.path\">/petclinic-</stringProp>#<stringProp name=\"HTTPSampler.path\">/petclinic-${{ steps.extract_version.outputs.version }}/</stringProp>#g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx
+   
     - name: Set up infrastructure in AZURE CLOUD
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
@@ -79,7 +79,7 @@ jobs:
     - name: Test-environment configuration completed
       run: sleep 10
 
-    - name: Start jmeter loadtest, fall back if test fail.
+    - name: Start jmeter loadtest, fall back if test fails.
       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
     - name: Loadtest passed, Push docker image to dockerhub
