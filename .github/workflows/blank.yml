@@ -57,7 +57,13 @@ jobs:
 
         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        
+    
+    - name: Update Selenium test script with version number
+      run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
+   
+    - name: Update Jmeter loadtest script with version number
+      run: sed -i "s|<stringProp name=\"HTTPSampler.path\">/petclinic-</stringProp>|<stringProp name=\"HTTPSampler.path\">/petclinic-${{ steps.extract_version.outputs.version }}/</stringProp>|" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx
+
     - name: Set up infrastructure in AZURE CLOUD
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
@@ -109,4 +115,4 @@ jobs:
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
 
     - name: Open webapp in chrome browser
-      run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic
+      run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}
