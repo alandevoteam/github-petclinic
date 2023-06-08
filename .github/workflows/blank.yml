@@ -88,7 +88,7 @@ jobs:
     - name: Configure acceptance environment on Acceptance-VM, pull image from Docker Hub
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
 
-    - name: Test-environment configuration completed
+    - name: Acceptance-environment configuration completed
       run: sleep 10
       
     - name: Start selenium test, fall back if test fails.
