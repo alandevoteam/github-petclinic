@@ -20,7 +20,10 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                           options=options)
 
 # # get link webapp
-driver.get("http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic/")
+driver.get("http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-/")
+
+# Introduce a delay to ensure the page has finished loading
+time.sleep(7)
 
 # Locate the link element and click it to open the page for finding owners
 link_element = driver.find_element(By.XPATH, '//*[@id="main-navbar"]/ul/li[2]/a/span[2]')
