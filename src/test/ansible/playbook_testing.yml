@@ -69,7 +69,7 @@
     - name: Copy warfile local to test-environment
       copy:
         src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/spring-framework-petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war
-        dest: /home/adminuser/petclinic.war
+        dest: /home/adminuser/petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war
 
     - name: Create Dockerfile
       copy:
