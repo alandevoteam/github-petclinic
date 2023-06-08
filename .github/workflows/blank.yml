@@ -91,10 +91,10 @@ jobs:
     - name: Test-environment configuration completed
       run: sleep 10
       
-    - name: Start selenium test, fall back if test fail.
+    - name: Start selenium test, fall back if test fails.
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
       
-    - name: Selenium test passed, delete TEST & ACCEPTANCE environments
+    - name: Selenium test passed, destroy TEST & ACCEPTANCE environments
       run: |
         cd ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/terraform
         terraform state pull > bkup.json
