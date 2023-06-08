@@ -84,7 +84,7 @@
           RUN cp -Rv /tmp/apache-tomcat-9.0.75/* /usr/local/tomcat/
           ADD tomcat-users.xml /usr/local/tomcat/conf/
           ADD context.xml /usr/local/tomcat/webapps/manager/META-INF
-          ADD petclinic.war /usr/local/tomcat/webapps/
+          ADD petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war /usr/local/tomcat/webapps/
           EXPOSE 8080
           CMD /usr/local/tomcat/bin/catalina.sh run
 
