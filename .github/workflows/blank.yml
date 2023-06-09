@@ -91,7 +91,7 @@ jobs:
     - name: Acceptance-environment configuration completed
       run: sleep 10
       
-    - name: Start selenium test, fall back if test fails.
+    - name: Start selenium, fall back if test fails.
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
       
     - name: Selenium test passed, destroy TEST & ACCEPTANCE environments
