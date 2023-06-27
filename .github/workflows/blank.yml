@@ -48,15 +48,15 @@ jobs:
     - name: Update release version in ansible inventory
       run: |
         echo "[testing-vm]" > ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/testazurekey VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "testpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_pass=P@assword1234. VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
         echo "[acceptance-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/acceptvm VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "xptpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_pass=P@assword1234. VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
         echo "" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
 
         echo "[production-vm]" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
-        echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
+        echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_pass=P@assword1234. VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
     
     - name: Update Selenium script with version number
       run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
@@ -74,8 +74,8 @@ jobs:
       run: sleep 60
         
     - name: Prepare test-environment on Test-VM
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
-
+      run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --ask-pass --ask-become-pass --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
+    
     - name: Test-environment configuration completed
       run: sleep 10
 
@@ -83,7 +83,7 @@ jobs:
       run: ~/jmeter/bin/jmeter -n -t ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx -l ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/file.jtl
 
     - name: Loadtest passed, Push docker image to dockerhub
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
+      run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --ask-pass --ask-become-pass --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
     - name: Configure acceptance environment on Acceptance-VM, pull image from Docker Hub
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
@@ -95,8 +95,8 @@ jobs:
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
   
     - name: Aceptance approved, set up Production-VM
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
-
+      run: ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --ask-pass --ask-become-pass --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
+      
     - name: Open webapp in chrome browser
       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}
 
