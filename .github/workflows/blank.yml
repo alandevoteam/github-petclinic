@@ -97,6 +97,9 @@ jobs:
     - name: Aceptance approved, set up Production-VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
 
+    - name: Configuration Production-VM completed
+      run: sleep 10
+      
     - name: Open webapp in chrome browser
       run: google-chrome prodpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}
 
