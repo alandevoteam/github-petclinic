@@ -29,11 +29,6 @@
         name: docker-ce
         state: present
 
-    - name: Install Nginx
-      apt:
-        name: nginx
-        state: present
-
     - name: Docker Hub Login
       docker_login:
         username: alandevoteam
