@@ -71,7 +71,7 @@ jobs:
         terraform apply -auto-approve
         
     - name: Terraform Infrastructure task completed
-      run: sleep 30
+      run: sleep 50
         
     - name: Prepare test-environment on Test-VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testing.yml
