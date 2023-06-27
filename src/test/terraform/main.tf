@@ -147,7 +147,7 @@ resource "azurerm_linux_virtual_machine" "test" {
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
   admin_username        = "adminuser"
-  admin_password        = "P@assword123."  # Set your desired password here
+  admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.test.id]
   tags = {
     Pillar = "M Cloud"
@@ -298,7 +298,7 @@ resource "azurerm_linux_virtual_machine" "accept" {
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
   admin_username        = "adminuser"
-  admin_password        = "P@assword123."  # Set your desired password here
+  admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.accept.id]
   tags = {
     Pillar = "M Cloud"
@@ -448,7 +448,7 @@ resource "azurerm_linux_virtual_machine" "production" {
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
   admin_username        = "adminuser"
-  admin_password        = "P@assword123."  # Set your desired password here
+  admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.production.id]
   tags = {
     Pillar = "M Cloud"
