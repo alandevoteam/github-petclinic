@@ -146,6 +146,7 @@ resource "azurerm_linux_virtual_machine" "test" {
   resource_group_name   = azurerm_resource_group.test.name
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
+  disable_password_authentication = false
   admin_username        = "adminuser"
   admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.test.id]
@@ -297,6 +298,7 @@ resource "azurerm_linux_virtual_machine" "accept" {
   resource_group_name   = azurerm_resource_group.test.name
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
+  disable_password_authentication = false
   admin_username        = "adminuser"
   admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.accept.id]
@@ -399,7 +401,7 @@ resource "azurerm_network_security_rule" "production2" {
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.test.name
-  network_security_group_name = azurerm_network_security_group.test.name
+  network_security_group_name = azurerm_network_security_group.production.name
 }
 
 # 8 network subnet nsg asso
@@ -447,6 +449,7 @@ resource "azurerm_linux_virtual_machine" "production" {
   resource_group_name   = azurerm_resource_group.test.name
   location              = azurerm_resource_group.test.location
   size                  = "Standard_D2s_v3"
+  disable_password_authentication = false
   admin_username        = "adminuser"
   admin_password        = "P@assword1234."  # Set your desired password here
   network_interface_ids = [azurerm_network_interface.production.id]
