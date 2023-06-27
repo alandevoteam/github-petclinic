@@ -59,7 +59,7 @@ jobs:
         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_private_key_file=/home/alan/.ssh/productionvm VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
     
     - name: Update Selenium script with version number
-      run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
+      run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
    
     - name: Update JMeter script with version
       run: sed -i "s|<stringProp name=\"HTTPSampler.path\">/petclinic-/</stringProp>|<stringProp name=\"HTTPSampler.path\">/petclinic-${{ steps.extract_version.outputs.version }}/</stringProp>|" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx
@@ -92,7 +92,7 @@ jobs:
       run: sleep 10
       
     - name: Start Selenium script, fall back if test fails.
-      run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumtest.py
+      run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
   
     - name: Aceptance approved, set up Production-VM
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_production.yml
