@@ -59,7 +59,7 @@ jobs:
         echo "prodpetclinic.westeurope.cloudapp.azure.com ansible_user=adminuser ansible_ssh_pass=P@assword1234. VERSION=${{ steps.extract_version.outputs.version }}" >> ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini
     
     - name: Update Selenium script with version number
-      run: sed -i "s|http://xptpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
+      run: sed -i "s|http://testpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-|http://xptpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-${{ steps.extract_version.outputs.version }}/|g" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
    
     - name: Update JMeter script with version
       run: sed -i "s|<stringProp name=\"HTTPSampler.path\">/petclinic-/</stringProp>|<stringProp name=\"HTTPSampler.path\">/petclinic-${{ steps.extract_version.outputs.version }}/</stringProp>|" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/petclinic_loadtest_plan.jmx
@@ -86,8 +86,8 @@ jobs:
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
     - name: Configure acceptance environment on Acceptance-VM, pull image from Docker Hub
-      run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_acceptance.yml
-
+      run: sleep 10
+      
     - name: Acceptance-environment configuration completed
       run: sleep 10
       
