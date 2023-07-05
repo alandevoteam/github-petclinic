@@ -20,7 +20,7 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
                           options=options)
 
 # # get link webapp
-driver.get("http://xptpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-/")
+driver.get("http://testpetclinic.westeurope.cloudapp.azure.com:8080/petclinic-/")
 
 # Introduce a delay to ensure the page has finished loading
 time.sleep(7)
