@@ -31,13 +31,13 @@ jobs:
         version=$(echo $version | grep -oP '^\d+\.\d+\.\d+')
         echo "::set-output name=version::$version"
 
-    - name: Deploy snapshot
+    - name: Maven deploy
       run: mvn clean deploy -DskipTests
       
-    - name: Prepare release
+    - name: release
       run: mvn release:prepare -B -DskipTests=true -DscmCommentPrefix="[skip ci]"
 
-    - name: Perform release
+    - name: Nexus release
       run: mvn release:perform -DskipTests -DscmCommentPrefix="[skip ci]"
 
     - name: Get warfile from Nexus repository
@@ -86,10 +86,10 @@ jobs:
       run: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/inventory.ini --extra-vars "ansible_ssh_common_args='-o StrictHostKeyChecking=no'" ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/ansible/playbook_testinghub.yml
 
     - name: Configure acceptance environment on Acceptance-VM, pull image from Docker Hub
-      run: sleep 10
+      run: sleep 5
       
     - name: Acceptance-environment configuration completed
-      run: sleep 10
+      run: sleep 5
       
     - name: Start Selenium script, fall back if test fails.
       run: python3 ~/actions-runner/_work/github-petclinic/github-petclinic/src/test/seleniumscript.py
