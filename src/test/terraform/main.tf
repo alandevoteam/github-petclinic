@@ -378,7 +378,7 @@ resource "azurerm_network_security_group" "production" {
 # 7 network security rule
 resource "azurerm_network_security_rule" "production" {
   name                        = "production-rule"
-  priority                    = 100
+  priority                    = 110
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
@@ -392,12 +392,27 @@ resource "azurerm_network_security_rule" "production" {
 
 resource "azurerm_network_security_rule" "production2" {
   name                        = "production2-rule"
-  priority                    = 110
+  priority                    = 120
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "*"
   source_port_range           = "*"
   destination_port_range      = "8080"
+  source_address_prefix       = "*"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.test.name
+  network_security_group_name = azurerm_network_security_group.production.name
+}
+
+# 7 network security rule
+resource "azurerm_network_security_rule" "production3" {
+  name                        = "production3-rule"
+  priority                    = 100
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "*"
+  source_port_range           = "*"
+  destination_port_range      = "*"
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.test.name
