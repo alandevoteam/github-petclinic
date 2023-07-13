@@ -34,6 +34,44 @@
         update_cache: yes
       become: yes
 
+    - name: Copy tomcat-users.xml
+      copy:
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/tomcat/tomcat-users.xml
+        dest: /home/adminuser/tomcat-users.xml
+
+    - name: Copy context.xml
+      copy:
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/tomcat/context.xml
+        dest: /home/adminuser/context.xml
+
+    - name: Copy warfile local to test-environment
+      copy:
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/spring-framework-petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war
+        dest: /home/adminuser/petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war
+
+    - name: Create Dockerfile
+      copy:
+        dest: /home/adminuser/Dockerfile
+        content: |
+          FROM ubuntu:latest 
+          RUN apt-get -y update && apt-get -y upgrade
+          RUN apt-get -y install openjdk-8-jdk wget
+          RUN mkdir /usr/local/tomcat
+          RUN wget https://downloads.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz -O /tmp/tomcat.tar.gz
+          RUN cd /tmp && tar xvfz tomcat.tar.gz
+          RUN cp -Rv /tmp/apache-tomcat-9.0.76/* /usr/local/tomcat/
+          ADD tomcat-users.xml /usr/local/tomcat/conf/
+          ADD context.xml /usr/local/tomcat/webapps/manager/META-INF
+          ADD petclinic-{{ hostvars[inventory_hostname]['VERSION'] }}.war /usr/local/tomcat/webapps/
+          EXPOSE 8080
+          CMD /usr/local/tomcat/bin/catalina.sh run
+
+    - name: Build Docker image
+      shell: docker build -t {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }} /home/adminuser
+
+    - name: Run Docker container
+      shell: docker run -d -p 80:8080 {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
+
     - name: Install OpenJDK 11
       apt:
         name: openjdk-11-jdk
