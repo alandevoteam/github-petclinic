@@ -139,7 +139,7 @@
 
     - name: Copy metricbeat.yml
       copy:
-        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/elk/metrictbeat.yml
+        src: /home/alan/actions-runner/_work/github-petclinic/github-petclinic/src/test/elk/metricbeat.yml
         dest: /etc/metricbeat/metricbeat.yml
 
     - name: Enable and start Metricbeat service
@@ -179,14 +179,14 @@
     - debug:
         var: response.content
 
-    - name: Docker Hub Login
-      docker_login:
-        username: alandevoteam
-        password: dckr_pat_Lf07J2YB_Y0TlYmrk059HQpb4OQ
-        registry_url: https://index.docker.io/v1/
+    # - name: Docker Hub Login
+    #   docker_login:
+    #     username: alandevoteam
+    #     password: dckr_pat_Lf07J2YB_Y0TlYmrk059HQpb4OQ
+    #     registry_url: https://index.docker.io/v1/
         
-    - name: Pull docker image
-      shell: docker pull {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
+    # - name: Pull docker image
+    #   shell: docker pull {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
 
-    - name: Run Docker container
-      shell: docker run -d -p 80:8080 {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
+    # - name: Run Docker container
+    #   shell: docker run -d -p 80:8080 {{ docker_image_name }}:{{ hostvars[inventory_hostname]['VERSION'] }}
